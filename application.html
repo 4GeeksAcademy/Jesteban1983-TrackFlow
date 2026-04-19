@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solicitud de Información — TrackFlow</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="validation.js"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+  <a href="index.html" class="text-blue-600 hover:underline m-auto" ><button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">Home</button></a>
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    <h1 class="text-3xl font-bold mb-6 text-center">Solicitud de Información</h1>
+
+    <form id="infoForm" class="bg-white p-6 rounded-xl shadow space-y-6" novalidate>
+
+      <!-- Nombre de empresa -->
+      <div>
+        <label class="block font-semibold mb-1">Nombre de la empresa *</label>
+        <input id="empresa" type="text" class="w-full border rounded px-3 py-2" placeholder="Empresa S.L." />
+        <p class="error-msg" id="err-empresa"></p>
+      </div>
+
+      <!-- Persona de contacto -->
+      <div>
+        <label class="block font-semibold mb-1">Persona de contacto *</label>
+        <input id="contacto" type="text" class="w-full border rounded px-3 py-2" placeholder="Jaime Perez"/>
+        <p class="error-msg" id="err-contacto"></p>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block font-semibold mb-1">Email corporativo *</label>
+        <input id="email" type="email" class="w-full border rounded px-3 py-2" placeholder="ejemplo@mail.com"/>
+        <p class="error-msg" id="err-email"></p>
+      </div>
+
+      <!-- Teléfono -->
+      <div>
+        <label class="block font-semibold mb-1">Teléfono *</label>
+        <input id="telefono" type="tel" class="w-full border rounded px-3 py-2" placeholder="+1 213 555 0147" />
+        <p class="error-msg" id="err-telefono"></p>
+      </div>
+
+      <!-- Sitio web -->
+      <div>
+        <label class="block font-semibold mb-1">Sitio web de la empresa (opcional)</label>
+        <input id="web" type="url" class="w-full border rounded px-3 py-2" placeholder="https://ejemplo.com" />
+        <p class="error-msg" id="err-web"></p>
+      </div>
+
+      <!-- País -->
+      <div>
+        <label class="block font-semibold mb-1">País de operación principal *</label>
+        <select id="pais" class="w-full border rounded px-3 py-2">
+          <option value="">Selecciona una opción</option>
+          <option>Estados Unidos</option>
+          <option>España</option>
+          <option>Ambos</option>
+          <option>Otro</option>
+        </select>
+        <p class="error-msg" id="err-pais"></p>
+      </div>
+
+      <!-- Tipo de producto -->
+      <div>
+        <label class="block font-semibold mb-1">Tipo de producto *</label>
+        <select id="producto" class="w-full border rounded px-3 py-2">
+          <option value="">Selecciona una opción</option>
+          <option>Moda</option>
+          <option>Electrónica</option>
+          <option>Cosmética</option>
+          <option>Alimentación</option>
+          <option>Otro</option>
+        </select>
+        <p class="error-msg" id="err-producto"></p>
+      </div>
+
+      <!-- Volumen mensual -->
+      <div>
+        <label class="block font-semibold mb-1">Volumen mensual estimado *</label>
+        <select id="volumen" class="w-full border rounded px-3 py-2">
+          <option value="">Selecciona una opción</option>
+          <option>0-100</option>
+          <option>101-500</option>
+          <option>501-2000</option>
+          <option>2000+</option>
+          <option>No estoy seguro</option>
+        </select>
+        <p class="error-msg" id="err-volumen"></p>
+      </div>
+
+      <!-- Servicios de interés -->
+      <div>
+        <label class="block font-semibold mb-1">Servicios de interés *</label>
+
+        <div class="space-y-1">
+          <label><input type="checkbox" class="servicio" value="Almacenaje" /> Almacenaje</label><br />
+          <label><input type="checkbox" class="servicio" value="Última milla" /> Última milla</label><br />
+          <label><input type="checkbox" class="servicio" value="Logística inversa" /> Logística inversa</label>
+        </div>
+
+        <p class="error-msg" id="err-servicios"></p>
+      </div>
+
+      <!-- 3PL -->
+      <div>
+        <label class="block font-semibold mb-1">¿Actualmente trabajas con otro 3PL? *</label>
+
+        <div class="space-y-1">
+          <label><input type="radio" name="trespl" value="Sí" /> Sí</label><br />
+          <label><input type="radio" name="trespl" value="No" /> No</label><br />
+          <label><input type="radio" name="trespl" value="Estoy evaluando opciones" /> Estoy evaluando opciones</label>
+        </div>
+
+        <p class="error-msg" id="err-3pl"></p>
+      </div>
+
+      <!-- Comentarios -->
+      <div>
+        <label class="block font-semibold mb-1">Comentarios (opcional)</label>
+        <textarea id="comentarios" rows="4" class="w-full border rounded px-3 py-2"></textarea>
+        <div class="text-right text-xs text-gray-500">
+          <span id="contador">0</span>/500
+        </div>
+        <p class="error-msg" id="err-comentarios"></p>
+      </div>
+
+      <!-- Política -->
+      <div>
+        <label>
+          <input id="privacidad" type="checkbox" /> Acepto la política de privacidad *
+        </label>
+        <p class="error-msg" id="err-privacidad"></p>
+      </div>
+
+      <!-- Advertencia especial -->
+      <p id="advertencia" class="text-yellow-600 font-semibold hidden">
+        Para volúmenes menores a 100 envíos mensuales, nuestros servicios podrían no ser la solución más eficiente. ¿Seguro que quieres continuar?
+      </p>
+
+      <!-- Botón -->
+      <button type="submit"
+              class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">
+        Enviar solicitud
+      </button>
+
+      <!-- Mensaje de éxito -->
+      <div id="exito" class="hidden bg-green-100 text-green-700 p-4 rounded-lg text-sm">
+        <p><strong>¡Gracias por tu interés en TrackFlow!</strong></p>
+        <p>Hemos recibido tu solicitud. Nuestro equipo comercial te contactará en 24-48 horas.</p>
+        <p>Si necesitas algo urgente, escríbenos a comercial@trackflow.com</p>
+      </div>
+
+    </form>
+  </main>
+
+</body>
+</html>

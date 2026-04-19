@@ -1,0 +1,5 @@
+.error-msg {
+  color: #dc2626; /* rojo Tailwind */
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
