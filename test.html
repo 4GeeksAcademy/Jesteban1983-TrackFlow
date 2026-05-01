@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackFlow Hito 2 - Test de Funcionalidad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .test-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .test-result {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .test-result label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .test-result .value {
+            color: #667eea;
+            word-break: break-all;
+        }
+
+        .test-result.success {
+            border-left-color: #28a745;
+            background: #f0fdf4;
+        }
+
+        .test-result.error {
+            border-left-color: #dc3545;
+            background: #fdf0f0;
+        }
+
+        .test-result.warning {
+            border-left-color: #ffc107;
+            background: #fffbf0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .status-badge.pass {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-badge.fail {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status-badge.pending {
+            background: #ffc107;
+            color: black;
+        }
+
+        .detail-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .detail-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .formula {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            font-family: 'Courier New', monospace;
+        }
+
+        .scoring-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .score-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .score-item .name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .score-item .value {
+            color: #667eea;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+            opacity: 0.9;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .table tr:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚚 TrackFlow - Hito 2</h1>
+            <p>Motor Lógico de Gestión de Almacenes y Transportistas</p>
+        </div>
+
+
+        <div id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Ejecutando pruebas de funcionalidad...</p>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-primary" onclick="ejecutarPruebas()">Ejecutar Pruebas</button>
+            <button class="btn-secondary" onclick="limpiarResultados()">Limpiar</button>
+        </div>
+
+        <div class="footer">
+            <p>TrackFlow Tech | Gestión de Última Milla y Almacenes</p>
+            <p>Responsable del Proyecto: Ana Whitfield, Directora de Operaciones de Almacén</p>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo
+        const sampleProducts = [
+            {
+                sku: "SHOE-BLK-42",
+                name: "Zapatillas Negras Running - Talla 42",
+                category: "Fashion",
+                weightKg: 0.8,
+                dimensions: { lengthCm: 35, widthCm: 22, heightCm: 12 },
+                warehouse: "Los Angeles",
+                stockQuantity: 45,
+                minStockThreshold: 20,
+                unitCostUSD: 35.0,
+                isFragile: false,
+                status: "Active",
+            },
+            {
+                sku: "LAPTOP-DELL-15",
+                name: "Laptop Dell 15 pulgadas",
+                category: "Electronics",
+                weightKg: 2.3,
+                dimensions: { lengthCm: 40, widthCm: 28, heightCm: 3 },
+                warehouse: "Zaragoza",
+                stockQuantity: 8,
+                minStockThreshold: 10,
+                unitCostUSD: 650.0,
+                isFragile: true,
+                status: "Low stock",
+            },
+            {
+                sku: "PERFUME-COCO-50",
+                name: "Perfume Coco 50ml",
+                category: "Cosmetics",
+                weightKg: 0.3,
+                dimensions: { lengthCm: 12, widthCm: 8, heightCm: 15 },
+                warehouse: "Los Angeles",
+                stockQuantity: 120,
+                minStockThreshold: 30,
+                unitCostUSD: 85.0,
+                isFragile: true,
+                status: "Active",
+            },
+        ];
+
+        const sampleCarriers = [
+            {
+                id: "CAR-UPS",
+                name: "UPS",
+                operatesIn: ["United States"],
+                baseRateUSD: 5.0,
+                ratePerKgUSD: 1.2,
+                ratePerKmUSD: 0.05,
+                avgDeliveryDays: 3,
+                onTimeRate: 88,
+                maxWeightKg: 30,
+                handlesFragile: true,
+                acceptsPriority: ["Standard", "Express"],
+            },
+            {
+                id: "CAR-SEUR",
+                name: "SEUR",
+                operatesIn: ["Spain"],
+                baseRateUSD: 6.5,
+                ratePerKgUSD: 1.5,
+                ratePerKmUSD: 0.08,
+                avgDeliveryDays: 2,
+                onTimeRate: 92,
+                maxWeightKg: 25,
+                handlesFragile: true,
+                acceptsPriority: ["Standard", "Express", "Same-day"],
+            },
+            {
+                id: "CAR-DHL",
+                name: "DHL Express",
+                operatesIn: ["United States", "Spain"],
+                baseRateUSD: 12.0,
+                ratePerKgUSD: 2.0,
+                ratePerKmUSD: 0.1,
+                avgDeliveryDays: 1,
+                onTimeRate: 95,
+                maxWeightKg: 50,
+                handlesFragile: true,
+                acceptsPriority: ["Express", "Same-day"],
+            },
+        ];
+
+        const sampleShipment = {
+            id: "SH-2024-8821",
+            sku: "LAPTOP-DELL-15",
+            quantity: 1,
+            origin: "Zaragoza",
+            destination: {
+                city: "Madrid",
+                country: "Spain",
+                postalCode: "28001",
+                distanceKm: 320,
+            },
+            priority: "Express",
+            declaredValueUSD: 650.0,
+            carrier: null,
+            status: "Pending",
+            createdAt: new Date("2024-03-15"),
+        };
+
+        // Funciones de cálculo (copiadas del TypeScript)
+        function calculateShippingCost(shipment, product, carrier) {
+            const baseCost = carrier.baseRateUSD;
+            const weightCost = product.weightKg * carrier.ratePerKgUSD * shipment.quantity;
+            const distanceCost = shipment.destination.distanceKm * carrier.ratePerKmUSD;
+            
+            let subtotal = baseCost + weightCost + distanceCost;
+            
+            const prioritySurcharge = {
+                Standard: 1.0,
+                Express: 1.3,
+                "Same-day": 1.6,
+            };
+            
+            const totalCost = subtotal * prioritySurcharge[shipment.priority];
+            return Math.round(totalCost * 100) / 100;
+        }
+
+        function scoreCarrierForShipment(carrier, shipment, product) {
+            let score = 0;
+            
+            // Destino
+            if (carrier.operatesIn.includes(shipment.destination.country)) {
+                score += 20;
+            }
+            
+            // Peso
+            const totalWeight = product.weightKg * shipment.quantity;
+            if (totalWeight <= carrier.maxWeightKg) {
+                score += 20;
+            }
+            
+            // Prioridad
+            if (carrier.acceptsPriority.includes(shipment.priority)) {
+                score += 15;
+            }
+            
+            // Frágiles
+            if (product.isFragile) {
+                if (carrier.handlesFragile) {
+                    score += 15;
+                }
+            } else {
+                score += 15;
+            }
+            
+            // Confiabilidad
+            const reliabilityScore = (carrier.onTimeRate / 100) * 30;
+            score += reliabilityScore;
+            
+            const finalScore = Math.round(score * 100) / 100;
+            return Math.min(finalScore, 100);
+        }
+
+        function validateProduct(product) {
+            const errors = [];
+            
+            if (!product.sku || product.sku.trim().length === 0) {
+                errors.push("SKU must not be empty");
+            }
+            
+            if (product.weightKg <= 0 || product.weightKg > 100) {
+                errors.push("Weight must be between 0 and 100 kg");
+            }
+            
+            const dimensions = product.dimensions;
+            if (dimensions.lengthCm <= 0 || dimensions.lengthCm > 200 ||
+                dimensions.widthCm <= 0 || dimensions.widthCm > 200 ||
+                dimensions.heightCm <= 0 || dimensions.heightCm > 200) {
+                errors.push("Dimensions must be between 0 and 200 cm");
+            }
+            
+            if (product.stockQuantity < 0) {
+                errors.push("Stock quantity must be >= 0");
+            }
+            
+            if (product.unitCostUSD <= 0) {
+                errors.push("Unit cost must be > 0");
+            }
+            
+            return {
+                valid: errors.length === 0,
+                errors,
+            };
+        }
+
+        function calculateTotalInventoryValue(products) {
+            const total = products.reduce(
+                (sum, product) => sum + product.stockQuantity * product.unitCostUSD,
+                0
+            );
+            return Math.round(total * 100) / 100;
+        }
+
+        function filterLowStockProducts(products) {
+            return products.filter(
+                (product) => product.stockQuantity <= product.minStockThreshold
+            );
+        }
+
+        function countProductsByCategory(products) {
+            const categories = ["Fashion", "Electronics", "Cosmetics", "Home", "Other"];
+            const counts = {};
+            categories.forEach(cat => counts[cat] = 0);
+            products.forEach(p => counts[p.category]++);
+            return counts;
+        }
+
+        // Ejecutar pruebas
+        function ejecutarPruebas() {
+            const content = document.getElementById('content');
+            let html = '';
+
+            // Test 1: Validación
+            const validation = validateProduct(sampleProducts[0]);
+            html += `
+                <div class="test-card">
+                    <h3>✓ Test 1: Validación de Producto</h3>
+                    <span class="status-badge ${validation.valid ? 'pass' : 'fail'}">
+                        ${validation.valid ? '✓ VÁLIDO' : '✗ INVÁLIDO'}
+                    </span>
+                    <div class="test-result ${validation.valid ? 'success' : 'error'}">
+                        <label>Producto testeado:</label>
+                        <div class="value">${sampleProducts[0].sku}</div>
+                        ${validation.errors.length > 0 ? `
+                            <label style="margin-top: 10px;">Errores:</label>
+                            <div class="value">${validation.errors.join('<br>')}</div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            // Test 2: Cálculo de costos
+            html += `<div class="detail-section">
+                <h2>💰 Test 2: Cálculo de Costos de Envío</h2>
+                <p>Se calcula el costo de envío de <strong>${sampleProducts[1].name}</strong> desde ${sampleShipment.origin} a ${sampleShipment.destination.city}, España</p>
+                <div class="formula">
+                    Cost = Base + (Weight × RatePerKg × Qty) + (Distance × RatePerKm)<br>
+                    Luego se aplica recargo por prioridad (Express: +30%)
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Transportista</th>
+                            <th>Costo Base</th>
+                            <th>Costo Total</th>
+                            <th>Recargo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            sampleCarriers.forEach(carrier => {
+                const cost = calculateShippingCost(sampleShipment, sampleProducts[1], carrier);
+                const baseCost = carrier.baseRateUSD + 
+                    (sampleProducts[1].weightKg * carrier.ratePerKgUSD) + 
+                    (sampleShipment.destination.distanceKm * carrier.ratePerKmUSD);
+                const surcharge = ((cost / baseCost - 1) * 100).toFixed(0);
+                html += `
+                    <tr>
+                        <td><strong>${carrier.name}</strong></td>
+                        <td>$${baseCost.toFixed(2)}</td>
+                        <td><strong>$${cost.toFixed(2)}</strong></td>
+                        <td>+${surcharge}%</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            </div>`;
+
+            // Test 3: Scoring
+            html += `<div class="detail-section">
+                <h2>⭐ Test 3: Scoring de Transportistas</h2>
+                <p>Sistema de puntos (0-100) para seleccionar el mejor transportista</p>
+            `;
+
+            sampleCarriers.forEach(carrier => {
+                const score = scoreCarrierForShipment(carrier, sampleShipment, sampleProducts[1]);
+                const destino = carrier.operatesIn.includes("Spain") ? 20 : 0;
+                const peso = (2.3 * 1) <= carrier.maxWeightKg ? 20 : 0;
+                const prioridad = carrier.acceptsPriority.includes("Express") ? 15 : 0;
+                const fragil = sampleProducts[1].isFragile && carrier.handlesFragile ? 15 : 0;
+                const confiabilidad = (carrier.onTimeRate / 100) * 30;
+
+                html += `
+                    <div style="margin-bottom: 30px; padding: 20px; border-radius: 5px; background: #f8f9fa;">
+                        <h4 style="color: #667eea; margin-bottom: 15px;">${carrier.name}</h4>
+                        <div class="scoring-breakdown">
+                            <div class="score-item">
+                                <div class="name">Destino (Spain)</div>
+                                <div class="value">+${destino}</div>
+                            </div>
+                            <div class="score-item">
+                                <div class="name">Peso (2.3kg)</div>
+                                <div class="value">+${peso}</div>
+                            </div>
+                            <div class="score-item">
+                                <div class="name">Prioridad (Express)</div>
+                                <div class="value">+${prioridad}</div>
+                            </div>
+                            <div class="score-item">
+                                <div class="name">Frágiles</div>
+                                <div class="value">+${fragil}</div>
+                            </div>
+                            <div class="score-item">
+                                <div class="name">Confiabilidad (${carrier.onTimeRate}%)</div>
+                                <div class="value">+${confiabilidad.toFixed(1)}</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; padding: 15px; background: #f0f4ff; border-radius: 5px; text-align: center;">
+                            <strong style="color: #667eea; font-size: 1.5em;">TOTAL: ${score}/100</strong>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+
+            // Test 4: Inventario
+            html += `<div class="test-grid">
+                <div class="test-card">
+                    <h3>📦 Test 4: Valor de Inventario</h3>
+                    <div class="test-result success">
+                        <label>Valor Total:</label>
+                        <div class="value">$${calculateTotalInventoryValue(sampleProducts).toFixed(2)}</div>
+                    </div>
+                </div>
+
+                <div class="test-card">
+                    <h3>⚠️ Test 5: Bajo Stock</h3>
+                    ${filterLowStockProducts(sampleProducts).map(p => `
+                        <div class="test-result warning">
+                            <label>${p.sku}</label>
+                            <div class="value">Stock: ${p.stockQuantity} (Mín: ${p.minStockThreshold})</div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="test-card">
+                    <h3>📊 Test 6: Conteo por Categoría</h3>
+                    ${Object.entries(countProductsByCategory(sampleProducts)).map(([cat, count]) => `
+                        <div class="test-result" style="border-left-color: #667eea;">
+                            <label>${cat}</label>
+                            <div class="value">${count} productos</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+
+            content.innerHTML = html;
+        }
+
+        function limpiarResultados() {
+            document.getElementById('content').innerHTML = `
+                <div class="loading">
+                    <p>Resultados borrados. Haz clic en "Ejecutar Pruebas" para comenzar.</p>
+                </div>
+            `;
+        }
+
+        // Ejecutar pruebas automáticamente al cargar
+        window.addEventListener('load', ejecutarPruebas);
+    </script>
+</body>
+</html>
