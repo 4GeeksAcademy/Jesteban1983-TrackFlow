@@ -57,13 +57,14 @@ export function calculateShippingCost(
   let subtotal = baseCost + weightCost + distanceCost;
   
   // Aplicar recargo por prioridad
-  const prioritySurcharge = {
-    Standard: 0,
-    Express: 1.3,
-    "Same-day": 1.6,
-  };
-  
-  const totalCost = subtotal * prioritySurcharge[shipment.priority];
+
+  const priorityMultiplier = {
+   Standard: 1.0,    // +0% → multiplicar por 1 (sin cambio)
+   Express: 1.3,     // +30%
+   "Same-day": 1.6,  // +60%
+   };
+
+const totalCost = subtotal * priorityMultiplier[shipment.priority];
   
   // Redondear a 2 decimales
   return Math.round(totalCost * 100) / 100;
